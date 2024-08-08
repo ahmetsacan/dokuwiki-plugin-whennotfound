@@ -1,4 +1,4 @@
-# Dokuwiki whennotfound plugin
+# Dokuwiki whennotfound plugin (previously named autosearch)
 
 whennotfound plugin handles non-existent pages and does one of the actions:
 
