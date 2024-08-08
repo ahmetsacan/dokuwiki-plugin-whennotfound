@@ -1,0 +1,5 @@
+author Ahmet Sacan
+date   2024-08-08
+name   whennotfound plugin
+desc   displays search results when a page does not exist
+url    https://github.com/ahmetsacan/dokuwiki-plugin-whennotfound

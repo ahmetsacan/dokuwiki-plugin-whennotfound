@@ -1,0 +1,5 @@
+^  Summary | handles non-existent pages by redirecting to index sub-page, showing sub-pages and/or displaying Search Results |
+
+If the site visitor requests a non-existent page, ''autosearch'' pluging will kick in to show the following:
+  - Redirect to the index sub-page if one exists. For example, if '':folder:index'' page exists but '':folder'' page does not exist, and a visitor requests the '':folder'' page, he/she will be automatically redirected to '':folder:index'' page. The names of index subpages can be specified in the configuration manager.
+  - If no index subpage is available, show the list of subpages (requires [[http://wiki.splitbrain.org/plugin:indexmenu|indexmenu]] plugin) and also the results  of searching the requested page title. The search results is useful especially when you move your pages around and static links from outside world into your site become obsolete.
