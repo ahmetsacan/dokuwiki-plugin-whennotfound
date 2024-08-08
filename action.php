@@ -12,7 +12,7 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
   function handle_action(&$e, $param){
     if($e->data != 'show') return;
     global $ID;
-    global $INFO; ve($INFO); die();
+
     if($_GET['whennotfounded']){
       msg("You are automatically redirected here from the non-existent page [".hsc($_GET['whennotfounded'])."].".(auth_quickaclcheck($_GET['whennotfounded'])>=AUTH_CREATE ? " If you did not want to be redirected, you may also <a href='".wl($_GET['whennotfounded'], "do=edit")."'>create and edit [".hsc($_GET['whennotfounded'])."]</a>":''));
       return;
@@ -45,6 +45,11 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
   function do_send404(&$e){
     header('HTTP/1.0 404 Not Found');
     die();
+  }
+  function do_send404_onlynoneditor(&$e){
+    global $ID;
+    if(auth_quickaclcheck($ID)>=AUTH_EDIT) return;
+    $this->do_send404($e);
   }
   function do_startpage(&$e){
     global $ID;
