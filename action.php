@@ -27,14 +27,14 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
     foreach($excludes as $exclude){
       if(strpos($ID,$exclude)!==false) return;
     }    
-    $trythings=$this->getConf('trythings');
-    if(is_string($trythings)) $trythings=explode(',',$trythings);
-    foreach($trythings as $thing){
-      $func="do_$thing";
+    $actions=$this->getConf('actions');
+    if(is_string($actions)) $actions=explode(',',$actions);
+    foreach($actions as $action){
+      $func="do_$action";
       if(is_callable([$this,$func])){
         if($this->$func($e)) break;
       }
-      else dbg("Undefined whennotfound thing to do [".hsc($thing)."]");
+      else dbg("Undefined whennotfound thing to do [".hsc($action)."]");
     }
   }
   function handle_content(&$e, $param){
