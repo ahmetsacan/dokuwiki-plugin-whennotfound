@@ -31,7 +31,10 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
     if(is_string($actions)) $actions=explode(',',$actions);
     foreach($actions as $action){
       $func="do_$action";
-      if(is_callable([$this,$func])){
+      if(str_starts_with($action,'PAGE:')){
+        $this->do_page($e,substr($action,5));
+      }
+      elseif(is_callable([$this,$func])){
         if($this->$func($e)) break;
       }
       else dbg("Undefined whennotfound thing to do [".hsc($action)."]");
@@ -42,6 +45,15 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
     if($action_plugin_whennotfound_pagelist) echo $action_plugin_whennotfound_pagelist;
   }
 
+  function do_page($e,$page){
+    global $ID;
+    $findnearest=!str_starts_with($page,':')&&tpl_getConf('findnearestpage');
+    if($findnearest&&($page2 = page_findnearest($page))) $page=$page2;
+    if(is_file(wikiFN($page))){
+      header("Location: ".wl($page,['whennotfounded'=>$ID],null,'&'));
+      exit();
+     }
+  }
   function do_send404(&$e){
     header('HTTP/1.0 404 Not Found');
     die();
@@ -61,7 +73,7 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
         $get=$_GET; unset($get['id']);
         if(auth_quickaclcheck($ID)>=AUTH_CREATE) $get['whennotfounded']=$ID;
         header("Location: ".wl("$ID:$index", $get,null,'&'));
-        die();
+        exit();
       }
     }
   }
@@ -74,7 +86,7 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
       $get['lang']=$conf['lang'];
       if(auth_quickaclcheck($ID)>=AUTH_CREATE) $get['whennotfounded']=$ID;
       header("Location: ".wl($id, $get,null,'&'));
-      die();
+      exit();
     }
   }
   function do_pagelist(&$e){
