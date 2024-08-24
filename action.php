@@ -63,6 +63,20 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
     if(auth_quickaclcheck($ID)>=AUTH_EDIT) return;
     $this->do_send404($e);
   }
+  function do_slashtocolon(&$e){
+    global $ID;
+    global $INPUT;
+    #$ID is cleaned and won't have / in it. We'll rely on $INPUT, but confirm that it is the same as $ID.
+    $inputid=$INPUT->str('id');
+    $cleaninputid=cleanID($inputid);
+    if($cleaninputid!=$ID) return; #ID does not match $INPUT; it is for a different page. Do nothing.
+    if(strpos($inputid,'/')===false) return;
+    $id=str_replace('/',':',$inputid);
+    $cleanid=cleanID($id);
+    if(!is_file(wikiFN($cleanid))) return;
+    #$ID=$cleanid; return true;  #this would show the page content without redirecting, but may create inconsistencies with other DokuWiki data (e.g., $INFO?).
+    header("Location: ".wl($cleanid,null,null,'&'));  exit();
+  }
   function do_startpage(&$e){
     global $ID;
     $startpages = explode(',',$this->getConf('startpages'));
@@ -85,8 +99,7 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
       $get=$_GET;
       $get['lang']=$conf['lang'];
       if(auth_quickaclcheck($ID)>=AUTH_CREATE) $get['whennotfounded']=$ID;
-      header("Location: ".wl($id, $get,null,'&'));
-      exit();
+      header("Location: ".wl($id, $get,null,'&')); exit();
     }
   }
   function do_pagelist(&$e){
