@@ -2,6 +2,7 @@
 
 whennotfound plugin handles non-existent pages and does one of the actions:
 
+* "slashtocolon": allows the use of / in ID parameter and translates it to colon :
 * "startpage": If the non-existent page is a namespace (folder) and an index page exists within,  redirect to that index page. The names of the index pages to look for are configurable.
 * "translation": Check if an available translation of the requested page exists and if so, redirect to it.
 * "pagelist": Show the list of subpages (requires the [indexmenu plugin](https://www.dokuwiki.org/plugin:indexmenu)).
