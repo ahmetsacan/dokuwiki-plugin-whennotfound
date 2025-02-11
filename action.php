@@ -30,6 +30,7 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
     $actions=$this->getConf('actions');
     if(is_string($actions)) $actions=explode(',',$actions);
     foreach($actions as $action){
+      if($action=='send404_onlynoneditor') $action='send404_ifnoteditor'; #I changed the function name. backwards compatibility for previously configured settings.
       $func="do_$action";
       if(str_starts_with($action,'PAGE:')){
         $this->do_page($e,substr($action,5));
@@ -58,7 +59,7 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
     header('HTTP/1.0 404 Not Found');
     die();
   }
-  function do_send404_onlynoneditor(&$e){
+  function do_send404_ifnoteditor(&$e){
     global $ID;
     if(auth_quickaclcheck($ID)>=AUTH_EDIT) return;
     $this->do_send404($e);
