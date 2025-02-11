@@ -13,7 +13,9 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
     if($e->data != 'show') return;
     global $ID;
 
+    //The current page is a redirection from a non-existent page that the plugin redirected.
     if($_GET['whennotfounded']??0){
+      if($_GET['whennotfound404']??0) header('HTTP/1.0 404 Not Found');
       msg("You are automatically redirected here from the non-existent page [".hsc($_GET['whennotfounded'])."].".(auth_quickaclcheck($_GET['whennotfounded'])>=AUTH_CREATE ? " If you did not want to be redirected, you may also <a href='".wl($_GET['whennotfounded'], "do=edit")."'>create and edit [".hsc($_GET['whennotfounded'])."]</a>":''));
       return;
     }
@@ -51,7 +53,8 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
     $findnearest=!str_starts_with($page,':')&&tpl_getConf('findnearestpage');
     if($findnearest&&($page2 = page_findnearest($page))) $page=$page2;
     if(is_file(wikiFN($page))){
-      header("Location: ".wl($page,['whennotfounded'=>$ID],null,'&'));
+      #redirect to new page. We will detect the redirection in the new request, print a message and also still send 404 code.
+      header("Location: ".wl($page,['whennotfounded'=>$ID,'whennotfound404'=>true],null,'&'));
       exit();
      }
   }
@@ -113,7 +116,8 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
 
     global $action_plugin_whennotfound_pagelist;
     $action_plugin_whennotfound_pagelist=$renderer->doc; #this'll be printed later in handle_content
-    msg("The page you requested [".hsc($ID)."] is a namespace and does not exist as a separate page. A search action is triggered for that page name below."
+    header('HTTP/1.0 404 Not Found');
+    msg("The page you requested [".hsc($ID)."] is a namespace and does not exist as a separate page. A pagelist action is triggered for that namespace and you should see a list of its subpages below."
       .( auth_quickaclcheck($ID)>=AUTH_CREATE ? " You may also <a href='".wl($ID, "do=edit")."'>create and edit [".hsc($ID)."]</a>." : "") 
     );
     return true;
@@ -122,7 +126,8 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
    function do_search(&$e){
     global $ID;
     if(!actionOK('search')) return;
-    msg("The page you requested [".hsc($ID)."] is a namespace and does not exist as a separate page. A search action is triggered for that page name below."
+    header('HTTP/1.0 404 Not Found');
+    msg("The page you requested [".hsc($ID)."] is a namespace and does not exist as a separate page. A search action is triggered for that namespace and you should see the results below."
       .( auth_quickaclcheck($ID)>=AUTH_CREATE ? " You may also <a href='".wl($ID, "do=edit")."'>create and edit [".hsc($ID)."]</a>." : "") );
     $e->data = 'search';
     return true;
