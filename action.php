@@ -13,7 +13,7 @@ class action_plugin_whennotfound extends DokuWiki_Action_Plugin {
     if($e->data != 'show') return;
     global $ID;
 
-    if($_GET['whennotfounded']){
+    if($_GET['whennotfounded']??0){
       msg("You are automatically redirected here from the non-existent page [".hsc($_GET['whennotfounded'])."].".(auth_quickaclcheck($_GET['whennotfounded'])>=AUTH_CREATE ? " If you did not want to be redirected, you may also <a href='".wl($_GET['whennotfounded'], "do=edit")."'>create and edit [".hsc($_GET['whennotfounded'])."]</a>":''));
       return;
     }
